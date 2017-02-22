@@ -1,0 +1,8 @@
+---
+- hosts: maas
+  user: vagrant
+  become: true
+  roles:
+    - common
+    - maas
+    - iptables

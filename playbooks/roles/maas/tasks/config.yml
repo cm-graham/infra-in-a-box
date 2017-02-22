@@ -1,0 +1,30 @@
+---
+- name: 'config : profile logged in?'
+  shell: "maas list | grep http://{{ ansible_all_ipv4_addresses[-1] }}/MAAS/"
+  register: maas_logged_in
+  changed_when: false
+  failed_when: false
+
+- name: 'config : admin apikey exists?'
+  shell: "maas apikey --user {{ maas_admin_user }}"
+  register: maas_admin_apikey
+  when: maas_logged_in.rc != 0
+  changed_when: false
+  failed_when: false
+
+- name: 'config : create admin user'
+  shell: >
+    maas createadmin --username={{ maas_admin_user }} \
+      --email={{ maas_admin_email }} --password=$(date | sha256sum | \
+        awk '{ print $1 }' | tee {{ maas_vb_directory }}/admin_pass)
+  args:
+    creates: "{{ maas_vb_directory }}/admin_pass"
+  when: maas_admin_apikey is defined and maas_admin_apikey.stdout == ""
+
+- name: "config : log into profile {{ maas_profile_name }}"
+  shell: >
+    maas login {{ maas_profile_name }} \
+      http://{{ ansible_all_ipv4_addresses[-1] }}/MAAS/ \
+      $(maas apikey --user {{ maas_admin_user }})
+    maas {{ maas_profile_name }} domain update maas name={{ maas_domain }}
+  when: maas_logged_in.rc != 0

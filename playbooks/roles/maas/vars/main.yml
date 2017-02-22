@@ -1,0 +1,20 @@
+---
+maas_admin_user: civilmaps
+maas_admin_email: infrastructure@civilmaps.com
+maas_profile_name: cm
+maas_domain: cm.local
+
+iptables_custom_rules:
+- name: 'maas_api_rules'
+  state: present
+  ipversion: 4
+  rules: |
+    -A INPUT -p tcp -m tcp --dport 80 -i enp0s8 -j ACCEPT
+    -A INPUT -p tcp -m tcp --dport 443 -i enp0s8 -j ACCEPT
+    -A INPUT -i enp0s9 -j ACCEPT
+
+- name: 'maas_ip_masquerading'
+  state: present
+  ipversion: 4
+  table: nat
+  rules: -A POSTROUTING -o enp0s3 -j MASQUERADE

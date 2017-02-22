@@ -1,0 +1,41 @@
+---
+- name: 'install : add ppa:maas/stable repository'
+  apt_repository:
+    repo: "ppa:maas/stable"
+    update_cache: yes
+  tags: repos
+
+- name: 'install : set maas api url'
+  debconf:
+    name: maas-common
+    question: "maas-rack-controller/maas-url"
+    vtype: string
+    value: "http://{{ ansible_all_ipv4_addresses[-1] }}/MAAS/"
+  tags: debconf
+
+- name: 'install : set maas pxe ip'
+  debconf:
+    name: maas-common
+    question: "maas/default-maas-url"
+    vtype: string
+    value: "{{ ansible_all_ipv4_addresses[-1] }}"
+  tags: debconf
+
+- name: 'install : base maas packages'
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - maas
+  tags: packages
+
+- name: 'install : enable ip forwarding'
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+  tags: sysctl
