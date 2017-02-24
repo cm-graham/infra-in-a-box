@@ -10,7 +10,7 @@ GUI_MODE = false
 
 MAAS_MEM = "2048"
 MAAS_CPU = "1"
-MAAS_PUBLIC_IP = "192.168.0.2"
+MAAS_PUBLIC_IP = "192.168.1.2"
 MAAS_INTERNAL_IP = "10.0.0.2"
 MAAS_DOMAIN = "cm.local"
 
@@ -34,10 +34,6 @@ Vagrant.configure("2") do |cfg|
     end
 
     maas.vm.synced_folder ".", "/vagrant", disabled: true
-    maas.vm.synced_folder ".lpv/maas/pgsql", "/var/lib/postgresql/9.5/main",
-      owner: "postgres", group: "postgres", create: true
-    maas.vm.synced_folder ".lpv/maas/etc", "/etc/maas", owner: "root",
-      group: "maas", create: true
 
     maas.vm.provision "ansible" do |ansible|
       ansible.verbose = true

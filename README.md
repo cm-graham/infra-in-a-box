@@ -34,10 +34,14 @@ The reasoning behind running all the management systems in virtual machines is
 to give a consistent setup regardless if this is stood up on a host running a
 GUI or not.
 
+[Master Node Services Layout](docs/images/master_node_services_layout.png)
+
 # Setup
 
 # References
 
++ Inspired by [VirtualBox extensions for
+  MAAS](https://insights.ubuntu.com/2015/01/15/virtualbox-extensions-for-maas/)
 + Loosely based on
   [vagrant-maas-in-a-box](https://github.com/battlemidget/vagrant-maas-in-a-box)
 
@@ -46,6 +50,7 @@ GUI or not.
 + Determine best way to make the systems' networking configuration a variable
   both for Vagrant and subsequently for the Ansible playbook.
 + Determine a way of making user names to the Ansible playbook.
++ Design and enable remote access to the vagrant environment.
 
 # Future work - may or may never be done!
 

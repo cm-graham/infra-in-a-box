@@ -16,9 +16,9 @@
   shell: >
     maas createadmin --username={{ maas_admin_user }} \
       --email={{ maas_admin_email }} --password=$(date | sha256sum | \
-        awk '{ print $1 }' | tee {{ maas_vb_directory }}/admin_pass)
+        awk '{ print $1 }' | tee /etc/maas/admin_pass)
   args:
-    creates: "{{ maas_vb_directory }}/admin_pass"
+    creates: "/etc/maas/admin_pass"
   when: maas_admin_apikey is defined and maas_admin_apikey.stdout == ""
 
 - name: "config : log into profile {{ maas_profile_name }}"
@@ -26,5 +26,6 @@
     maas login {{ maas_profile_name }} \
       http://{{ ansible_all_ipv4_addresses[-1] }}/MAAS/ \
       $(maas apikey --user {{ maas_admin_user }})
+
     maas {{ maas_profile_name }} domain update maas name={{ maas_domain }}
   when: maas_logged_in.rc != 0

@@ -5,6 +5,12 @@
     update_cache: yes
   tags: repos
 
+- name: 'install : add shared groups'
+  group: name={{ item.name }} gid={{ item.gid }} state=present
+  with_items:
+    - { name: 'maas', gid: 950 }
+    - { name: 'postgres', gid: 951 }
+
 - name: 'install : set maas api url'
   debconf:
     name: maas-common
